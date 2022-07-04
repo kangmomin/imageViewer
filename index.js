@@ -1,0 +1,32 @@
+const { app, BrowserWindow } = require('electron')
+const path = require('path')
+
+function createWindow() {
+    let win = new BrowserWindow({
+        show: false,
+        frame: false,
+        webPreferences: {
+            preload: path.join(__dirname, 'preload.js')
+        }
+    })
+    win.maximize()
+
+    win.loadFile('./view/index.html')
+}
+
+app.whenReady().then(() => {
+    createWindow()
+
+    app.on('activate', () => {
+        if (BrowserWindow.getAllWindows().length === 0) {
+            createWindow()
+        }
+    })
+})
+
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+        app.quit()
+    }
+})
+
